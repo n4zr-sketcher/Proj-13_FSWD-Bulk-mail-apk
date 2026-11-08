@@ -14,6 +14,7 @@ import {
 } from 'react-icons/hi2';
 import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
+import AuraBackground from '../components/AuraBackground';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -54,13 +55,9 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-white flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Ambient background glow orbs */}
-      <div className="fixed top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/15 blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-teal-500/15 blur-[130px] pointer-events-none" />
-
-      {/* Subtle grid pattern */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-20 pointer-events-none" />
+    <div className="min-h-screen text-white flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Aura Gradient: Violet Horizon Background */}
+      <AuraBackground fixed={true} />
 
       {toast && (
         <Toast

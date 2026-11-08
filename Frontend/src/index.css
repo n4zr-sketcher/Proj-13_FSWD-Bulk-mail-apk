@@ -7,9 +7,10 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  /* Base color on BODY - blend modes composite against this */
   body {
     font-family: var(--font-body);
-    background-color: #090d16;
+    background-color: #100e0b;
     color: #f1f5f9;
     overflow-x: hidden;
   }
@@ -20,46 +21,122 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #090d16;
+    background: #100e0b;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1e293b;
+    background: #27272a;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #10b981;
+    background: #818cf8;
   }
 }
 
-/* Glassmorphism & Mesh Background Effects */
+/* ==========================================================================
+   Aura Gradient: "Violet Horizon"
+   3-Layer CSS mix-blend-mode stack compositing against body #100e0b
+   ========================================================================== */
+
+.aura-bg {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  /* NO background-color - layers blend against body */
+}
+
+/* Fixed fullscreen variant for global application layout */
+.aura-fixed {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Layer 1 - hard-light */
+.aura-layer-1 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0) 0%,
+    rgba(99, 102, 241, 0.9) 40%,
+    rgb(255, 255, 255) 70%,
+    rgb(216, 180, 254) 82%,
+    rgb(244, 114, 182) 100%
+  );
+  mix-blend-mode: hard-light;
+  filter: blur(100px);
+  transform: translateZ(0);
+  will-change: transform;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .aura-layer-1 {
+    filter: blur(144px);
+  }
+}
+
+/* Layer 2 - soft-light */
+.aura-layer-2 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0) 0%,
+    rgba(99, 102, 241, 0.9) 40%,
+    rgb(255, 255, 255) 70%,
+    rgb(216, 180, 254) 82%,
+    rgb(244, 114, 182) 100%
+  );
+  mix-blend-mode: soft-light;
+  filter: blur(200px);
+  transform: translateZ(0);
+  will-change: transform;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .aura-layer-2 {
+    filter: blur(260px);
+  }
+}
+
+/* Layer 3 - normal */
+.aura-layer-3 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10, 8, 26) 0%,
+    rgba(10, 8, 26, 0.9) 15%,
+    rgba(10, 8, 26, 0.55) 35%,
+    rgba(10, 8, 26, 0.2) 60%,
+    rgba(10, 8, 26, 0) 100%
+  );
+  mix-blend-mode: normal;
+  transform: translateZ(0);
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* Glassmorphism & Card Effects tailored to Violet Horizon */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(18, 16, 25, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.09);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(16, 185, 129, 0.35);
-  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.15);
+  border-color: rgba(168, 85, 247, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(147, 51, 234, 0.2);
   transform: translateY(-2px);
-}
-
-/* Radiant glow utility */
-.glow-emerald {
-  box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.3);
-}
-
-/* Subtle dot grid ambient background */
-.bg-grid-pattern {
-  background-size: 32px 32px;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
 }
