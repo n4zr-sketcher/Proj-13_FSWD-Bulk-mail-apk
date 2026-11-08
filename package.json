@@ -1,0 +1,14 @@
+{
+  "name": "bulk-mail-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full Stack Bulk Mail Application (MERN + Brevo)",
+  "scripts": {
+    "start:backend": "cd Backend && npm start",
+    "dev:backend": "cd Backend && npm run dev",
+    "dev:frontend": "cd Frontend && npm run dev",
+    "build:frontend": "cd Frontend && npm run build",
+    "install:all": "cd Backend && npm install && cd ../Frontend && npm install"
+  }
+}
+
