@@ -13,8 +13,8 @@ connectDB();
 const app = express();
 
 // ─── Middleware ───────────────────────────────────────────────────────
-// Enable CORS for frontend dev server
-app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }));
+// Enable CORS for frontend dev server and production deployments
+app.use(cors());
 
 // Parse incoming JSON request bodies
 app.use(express.json());
