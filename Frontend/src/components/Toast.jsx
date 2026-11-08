@@ -1,28 +1,22 @@
 /**
- * Toast — a fixed-position notification that auto-dismisses after 4 seconds.
- * Supports 'success' and 'error' types with distinct left-border colors and icons.
- * Animates in from the right using CSS transitions.
+ * Toast — floating glassmorphic notification banner with auto-dismiss.
  */
 import { useEffect, useState } from 'react';
-import { HiCheckCircle, HiXCircle, HiX } from 'react-icons/hi';
+import { HiOutlineCheckCircle, HiOutlineExclamationCircle, HiOutlineXMark } from 'react-icons/hi2';
 
 export default function Toast({ message, type = 'success', onClose }) {
   const [visible, setVisible] = useState(false);
 
-  // Animate in on mount, auto-dismiss after 4 seconds
   useEffect(() => {
-    // Trigger enter animation on next frame
-    const enterTimer = requestAnimationFrame(() => setVisible(true));
-
-    const dismissTimer = setTimeout(() => {
+    const frame = requestAnimationFrame(() => setVisible(true));
+    const timer = setTimeout(() => {
       setVisible(false);
-      // Wait for exit animation before calling onClose
-      setTimeout(() => onClose?.(), 200);
-    }, 4000);
+      setTimeout(() => onClose?.(), 250);
+    }, 4500);
 
     return () => {
-      cancelAnimationFrame(enterTimer);
-      clearTimeout(dismissTimer);
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
     };
   }, [onClose]);
 
@@ -35,27 +29,35 @@ export default function Toast({ message, type = 'success', onClose }) {
 
   return (
     <div
-      className={`fixed top-6 right-6 z-50 flex items-start gap-3 bg-white border border-neutral-200 px-5 py-4 min-w-[320px] max-w-md transition-all duration-200 ${
-        isSuccess ? 'border-l-4 border-l-emerald-500' : 'border-l-4 border-l-red-500'
-      } ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
+      className={`fixed top-20 right-5 z-[100] flex items-start gap-3.5 px-4 py-3.5 rounded-xl border backdrop-blur-xl shadow-2xl transition-all duration-300 min-w-[320px] max-w-md ${
+        isSuccess
+          ? 'bg-emerald-950/80 border-emerald-500/40 text-emerald-200 shadow-emerald-950/50'
+          : 'bg-rose-950/80 border-rose-500/40 text-rose-200 shadow-rose-950/50'
+      } ${
+        visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-3 scale-95'
+      }`}
     >
-      {/* Icon */}
-      {isSuccess ? (
-        <HiCheckCircle className="text-emerald-500 text-xl shrink-0 mt-0.5" />
-      ) : (
-        <HiXCircle className="text-red-500 text-xl shrink-0 mt-0.5" />
-      )}
+      <div className="pt-0.5 shrink-0">
+        {isSuccess ? (
+          <HiOutlineCheckCircle className="text-emerald-400 text-xl" />
+        ) : (
+          <HiOutlineExclamationCircle className="text-rose-400 text-xl" />
+        )}
+      </div>
 
-      {/* Message */}
-      <p className="text-sm text-black flex-1">{message}</p>
+      <div className="flex-1 text-xs font-medium leading-relaxed">
+        <p className="font-semibold text-white mb-0.5">
+          {isSuccess ? 'Success' : 'Notice'}
+        </p>
+        <p className="opacity-90">{message}</p>
+      </div>
 
-      {/* Close button */}
       <button
         onClick={handleClose}
-        className="text-neutral-400 hover:text-black transition-colors cursor-pointer"
-        aria-label="Close notification"
+        className="text-neutral-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10 cursor-pointer"
+        aria-label="Dismiss Notification"
       >
-        <HiX size={16} />
+        <HiOutlineXMark size={16} />
       </button>
     </div>
   );

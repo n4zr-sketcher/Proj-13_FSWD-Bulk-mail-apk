@@ -1,8 +1,5 @@
 /**
- * App — root component with route definitions and layout.
- * Uses react-router-dom v7 for routing.
- * Layout wraps authenticated pages with Navbar + content area.
- * Auth pages (Login, Register) render without the Navbar.
+ * App — root component with routes, layout container, and ambient gradient background.
  */
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -15,16 +12,31 @@ import ComposeMail from './pages/ComposeMail';
 import History from './pages/History';
 
 /**
- * Layout — wraps authenticated pages with the Navbar.
- * Uses Outlet from react-router-dom to render child routes.
+ * Layout — wraps authenticated views with the floating Navbar and ambient background glow.
  */
 function Layout() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#090d16] text-slate-100 relative overflow-hidden flex flex-col">
+      {/* Ambient background glow orbs */}
+      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none -z-10" />
+      <div className="fixed top-[20%] right-[-10%] w-[450px] h-[450px] rounded-full bg-teal-500/10 blur-[130px] pointer-events-none -z-10" />
+      <div className="fixed bottom-[-10%] left-[30%] w-[600px] h-[400px] rounded-full bg-emerald-600/5 blur-[150px] pointer-events-none -z-10" />
+
+      {/* Subtle background grid pattern */}
+      <div className="fixed inset-0 bg-grid-pattern opacity-15 pointer-events-none -z-10" />
+
+      {/* Floating Navbar */}
       <Navbar />
-      <main className="max-w-5xl mx-auto px-6 py-10">
+
+      {/* Content wrapper with top spacing for floating navbar */}
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-16">
         <Outlet />
       </main>
+
+      {/* Clean footer */}
+      <footer className="w-full border-t border-white/5 py-6 text-center text-xs text-neutral-500">
+        <p>BulkMail Platform • Powered by Brevo Transactional Engine</p>
+      </footer>
     </div>
   );
 }
@@ -34,11 +46,11 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public routes — no navbar */}
+          {/* Public authentication routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected routes — with navbar layout */}
+          {/* Protected routes wrapped in main layout */}
           <Route
             path="/"
             element={
@@ -53,8 +65,8 @@ export default function App() {
             <Route path="history" element={<History />} />
           </Route>
 
-          {/* Catch-all redirect */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Catch-all route */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

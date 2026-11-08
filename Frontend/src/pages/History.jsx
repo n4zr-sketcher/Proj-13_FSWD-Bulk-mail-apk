@@ -1,191 +1,314 @@
 /**
- * History — email history page showing all sent emails.
- * Features search by subject, expandable rows for details,
- * and load-more pagination.
+ * History — comprehensive email dispatch logs.
+ * Features:
+ * - Search by subject or recipient
+ * - Filter by status (All, Delivered, Failed, Pending)
+ * - Expandable cards with HTML preview, recipient chips, and error diagnosis
+ * - One-click delete and copy functionality
  */
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { HiChevronDown, HiChevronUp, HiSearch } from 'react-icons/hi';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  HiOutlineMagnifyingGlass,
+  HiOutlineChevronDown,
+  HiOutlineChevronUp,
+  HiOutlineTrash,
+  HiOutlineClock,
+  HiOutlineEnvelope,
+  HiOutlineArrowPath,
+  HiOutlineXMark,
+  HiOutlineCheck,
+} from 'react-icons/hi2';
 import api from '../api/axios';
 import StatusBadge from '../components/StatusBadge';
+import Toast from '../components/Toast';
 
-const PAGE_SIZE = 10;
+const FILTER_TABS = ['All', 'Delivered', 'Failed', 'Pending'];
 
 export default function History() {
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('All');
   const [expandedId, setExpandedId] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [toast, setToast] = useState(null);
+  const [copiedId, setCopiedId] = useState(null);
 
-  // Fetch all emails on mount
+  const navigate = useNavigate();
+
+  const fetchEmails = async () => {
+    try {
+      const res = await api.get('/emails');
+      setEmails(res.data);
+    } catch (err) {
+      console.error('Failed to load history:', err);
+      setToast({ message: 'Failed to fetch email history from server', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchEmails = async () => {
-      try {
-        const res = await api.get('/emails');
-        setEmails(res.data);
-      } catch (err) {
-        console.error('Failed to load email history:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEmails();
   }, []);
 
-  // Filter emails by subject search query
+  // Filter emails based on search query and tab status
   const filtered = useMemo(() => {
-    if (!search.trim()) return emails;
-    const q = search.toLowerCase();
-    return emails.filter((email) =>
-      email.subject?.toLowerCase().includes(q)
-    );
-  }, [emails, search]);
+    return emails.filter((email) => {
+      const matchesSearch =
+        email.subject?.toLowerCase().includes(search.toLowerCase()) ||
+        email.recipients?.some((r) => r.toLowerCase().includes(search.toLowerCase()));
 
-  const displayed = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
+      if (!matchesSearch) return false;
+
+      if (selectedFilter === 'All') return true;
+      if (selectedFilter === 'Delivered') return email.status === 'sent' || email.status === 'delivered';
+      if (selectedFilter === 'Failed') return email.status === 'failed';
+      if (selectedFilter === 'Pending') return email.status === 'pending';
+
+      return true;
+    });
+  }, [emails, search, selectedFilter]);
 
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const handleDelete = async (id, e) => {
+    e.stopPropagation();
+    try {
+      await api.delete(`/emails/${id}`);
+      setEmails((prev) => prev.filter((item) => item._id !== id));
+      setToast({ message: 'Campaign record deleted successfully', type: 'success' });
+      if (expandedId === id) setExpandedId(null);
+    } catch (err) {
+      setToast({ message: 'Failed to delete email record', type: 'error' });
+    }
+  };
+
+  const handleCopyBody = (body, id, e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(body);
+    setCopiedId(id);
+    setToast({ message: 'Email HTML copied to clipboard', type: 'success' });
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '—';
+    return new Date(dateStr).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-neutral-500 text-sm uppercase tracking-wide">Loading...</p>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
+        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-neutral-400 text-xs font-semibold uppercase tracking-widest">
+          Loading Transmission Logs...
+        </p>
       </div>
     );
   }
 
   return (
-    <div>
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-black">Email History</h1>
-        <p className="text-neutral-500 text-sm mt-1">All your sent email campaigns</p>
-      </div>
-
-      {/* Search bar */}
-      <div className="mb-6 relative">
-        <HiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setVisibleCount(PAGE_SIZE);
-          }}
-          className="w-full border border-neutral-200 rounded-sm pl-10 pr-4 py-3 text-sm text-black placeholder-neutral-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-          placeholder="Search by subject..."
+    <div className="space-y-6">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
         />
+      )}
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Dispatch History
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+            Complete audit trail of all bulk email campaigns and Brevo delivery events.
+          </p>
+        </div>
+
+        <button
+          onClick={fetchEmails}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+        >
+          <HiOutlineArrowPath size={14} />
+          <span>Refresh Logs</span>
+        </button>
       </div>
 
-      {/* Email list */}
+      {/* Search Bar & Filter Pills */}
+      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+        {/* Search Input */}
+        <div className="relative flex-1">
+          <HiOutlineMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-black/40 border border-white/10 rounded-xl pl-11 pr-10 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
+            placeholder="Search by subject or recipient email..."
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white p-1"
+            >
+              <HiOutlineXMark size={16} />
+            </button>
+          )}
+        </div>
+
+        {/* Status Filter Pills */}
+        <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10 shrink-0 overflow-x-auto">
+          {FILTER_TABS.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setSelectedFilter(tab)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                selectedFilter === tab
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/20'
+                  : 'text-neutral-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Campaigns List */}
       {filtered.length === 0 ? (
-        <div className="border border-neutral-200 rounded-sm p-8 text-center">
-          <p className="text-neutral-500 text-sm">
-            {emails.length === 0 ? 'No emails sent yet.' : 'No emails match your search.'}
+        <div className="rounded-2xl glass-panel p-12 text-center border border-white/10">
+          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 mx-auto mb-3">
+            <HiOutlineEnvelope size={22} />
+          </div>
+          <p className="text-sm font-semibold text-white">No campaigns found</p>
+          <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
+            {emails.length === 0
+              ? 'No emails have been dispatched yet. Send your first campaign from the compose window.'
+              : 'No campaigns match your search and filter criteria.'}
           </p>
           {emails.length === 0 && (
             <Link
               to="/compose"
-              className="inline-block mt-3 text-sm text-emerald-500 hover:text-emerald-600 transition-colors"
+              className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider hover:bg-emerald-500/30 transition-colors"
             >
-              Compose your first email →
+              Compose Campaign Now
             </Link>
           )}
         </div>
       ) : (
-        <div className="border border-neutral-200 rounded-sm overflow-hidden">
-          {/* Table header */}
-          <div className="hidden md:grid grid-cols-12 bg-neutral-50 px-4 py-3 gap-4">
-            <span className="col-span-5 text-xs uppercase tracking-wide text-neutral-500 font-medium">Subject</span>
-            <span className="col-span-2 text-xs uppercase tracking-wide text-neutral-500 font-medium">Recipients</span>
-            <span className="col-span-2 text-xs uppercase tracking-wide text-neutral-500 font-medium">Status</span>
-            <span className="col-span-3 text-xs uppercase tracking-wide text-neutral-500 font-medium">Sent At</span>
-          </div>
+        <div className="rounded-2xl glass-panel border border-white/10 overflow-hidden divide-y divide-white/5">
+          {filtered.map((email) => {
+            const isExpanded = expandedId === email._id;
 
-          {/* Rows */}
-          <div className="divide-y divide-neutral-200">
-            {displayed.map((email) => (
-              <div key={email._id}>
-                {/* Main row — clickable to expand */}
-                <button
+            return (
+              <div key={email._id} className="transition-colors hover:bg-white/[0.02]">
+                {/* Collapsible Row Header */}
+                <div
                   onClick={() => toggleExpand(email._id)}
-                  className="w-full text-left grid grid-cols-1 md:grid-cols-12 px-4 py-3 gap-2 md:gap-4 items-center hover:bg-neutral-50 transition-colors cursor-pointer"
+                  className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
                 >
-                  <span className="md:col-span-5 text-sm text-black flex items-center gap-2">
-                    {expandedId === email._id ? (
-                      <HiChevronUp size={14} className="text-neutral-400 shrink-0" />
-                    ) : (
-                      <HiChevronDown size={14} className="text-neutral-400 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="font-bold text-white text-sm truncate">
+                        {email.subject}
+                      </span>
+                      <StatusBadge status={email.status} />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400">
+                      <span className="font-mono text-neutral-300">
+                        {email.recipients?.length || 0} recipient{(email.recipients?.length || 0) !== 1 ? 's' : ''}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <HiOutlineClock size={13} />
+                        {formatDate(email.sentAt || email.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <button
+                      type="button"
+                      onClick={(e) => handleDelete(email._id, e)}
+                      className="p-2 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      title="Delete Record"
+                    >
+                      <HiOutlineTrash size={16} />
+                    </button>
+
+                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400">
+                      {isExpanded ? <HiOutlineChevronUp size={16} /> : <HiOutlineChevronDown size={16} />}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expanded Details Section */}
+                {isExpanded && (
+                  <div className="px-5 pb-6 pt-2 bg-black/40 border-t border-white/5 space-y-4">
+                    {/* Error diagnostic banner if failed */}
+                    {email.status === 'failed' && email.errorMessage && (
+                      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs leading-relaxed">
+                        <strong className="block font-bold text-rose-200 mb-1">Brevo Error Log:</strong>
+                        {email.errorMessage}
+                      </div>
                     )}
-                    {email.subject}
-                  </span>
-                  <span className="md:col-span-2 text-sm text-neutral-500">
-                    {email.recipients?.length || 0} recipients
-                  </span>
-                  <span className="md:col-span-2">
-                    <StatusBadge status={email.status} />
-                  </span>
-                  <span className="md:col-span-3 text-sm text-neutral-500">
-                    {new Date(email.createdAt).toLocaleString()}
-                  </span>
-                </button>
 
-                {/* Expanded detail panel */}
-                {expandedId === email._id && (
-                  <div className="px-4 pb-4 pt-1 bg-neutral-50 border-t border-neutral-100">
-                    <div className="space-y-4 pl-6">
-                      {/* Recipient list */}
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-neutral-500 mb-1">Recipients</p>
-                        <div className="flex flex-wrap gap-1">
-                          {email.recipients?.map((r, i) => (
-                            <span
-                              key={i}
-                              className="text-xs bg-white border border-neutral-200 px-2 py-0.5 text-neutral-600"
-                            >
-                              {r}
-                            </span>
-                          ))}
-                        </div>
+                    {/* Recipients Chips */}
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">
+                        Delivered Recipients ({email.recipients?.length || 0})
+                      </p>
+                      <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto pr-2">
+                        {email.recipients?.map((r, i) => (
+                          <span
+                            key={i}
+                            className="inline-block px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] font-mono text-neutral-300"
+                          >
+                            {r}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* HTML Preview Box */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                          Message Body Preview
+                        </p>
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyBody(email.body, email._id, e)}
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                        >
+                          {copiedId === email._id ? <HiOutlineCheck size={13} /> : null}
+                          <span>{copiedId === email._id ? 'Copied' : 'Copy HTML'}</span>
+                        </button>
                       </div>
 
-                      {/* Email body preview */}
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-neutral-500 mb-1">Body Preview</p>
-                        <div className="bg-white border border-neutral-200 p-3 text-sm text-black max-h-40 overflow-y-auto">
-                          <div dangerouslySetInnerHTML={{ __html: email.body || '<em>No content</em>' }} />
-                        </div>
+                      <div className="rounded-xl border border-neutral-300 bg-white p-4 max-h-56 overflow-auto text-black">
+                        <div dangerouslySetInnerHTML={{ __html: email.body || '<em>No body content</em>' }} />
                       </div>
-
-                      {/* Error message if failed */}
-                      {email.status === 'failed' && email.errorMessage && (
-                        <div>
-                          <p className="text-xs uppercase tracking-wide text-red-500 mb-1">Error</p>
-                          <p className="text-sm text-red-600 bg-red-50 border border-red-200 p-3">{email.errorMessage}</p>
-                        </div>
-                      )}
                     </div>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-
-          {/* Load more */}
-          {hasMore && (
-            <div className="px-4 py-3 border-t border-neutral-200">
-              <button
-                onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
-                className="text-sm text-neutral-500 hover:text-black uppercase tracking-wide transition-colors cursor-pointer"
-              >
-                Load More ({filtered.length - visibleCount} remaining)
-              </button>
-            </div>
-          )}
+            );
+          })}
         </div>
       )}
     </div>
