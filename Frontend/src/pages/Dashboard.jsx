@@ -1,8 +1,9 @@
 /**
- * Dashboard (Unslop pass - Light Theme)
- * Deliberate, modern minimal campaign monitoring interface.
- * - Colors: rgb(57, 129, 246), rgb(241, 68, 68), rgb(245, 245, 245), rgb(220, 242, 255).
- * - Clean white cards, tabular metrics, calm atmospheric gradient.
+ * Dashboard (Unslop pass)
+ * Deliberate, quiet campaign monitoring interface.
+ * - Contextual headline ("Campaign overview" instead of "Welcome back 👋").
+ * - Clean stat cards focused on tabular figures without decorative fluff.
+ * - Quiet table with tabular dates and semantic status indicators.
  */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -46,22 +47,19 @@ export default function Dashboard() {
       label: 'Delivered',
       value: totalDelivered,
       detail: `${totalRecipients} recipients total`,
-      accent: 'text-[#1d4ed8]',
-      borderTop: 'border-t-2 border-t-[#3981f6]',
+      accent: 'text-[#4cc38a]',
     },
     {
       label: 'Failures',
       value: totalFailed,
-      detail: totalFailed === 0 ? '0 delivery errors' : 'Dispatches rejected',
-      accent: totalFailed > 0 ? 'text-[#f14444]' : 'text-[#111827]',
-      borderTop: totalFailed > 0 ? 'border-t-2 border-t-[#f14444]' : 'border-t-2 border-t-transparent',
+      detail: totalFailed === 0 ? '0 bounces' : 'Delivery rejected',
+      accent: totalFailed > 0 ? 'text-[#e5484d]' : 'text-[#ededed]',
     },
     {
       label: 'Queued',
       value: totalPending,
       detail: 'In relay processing',
-      accent: 'text-[#111827]',
-      borderTop: 'border-t-2 border-t-transparent',
+      accent: 'text-[#ededed]',
     },
   ];
 
@@ -77,8 +75,8 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
-        <span className="text-xs text-[#6b7280] tracking-wider">
-          Loading metrics...
+        <span className="text-xs text-[#85858b] uppercase tracking-wider">
+          Loading metrics
         </span>
       </div>
     );
@@ -89,50 +87,52 @@ export default function Dashboard() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-normal tracking-tight text-[#111827]">
+          <h1 className="text-2xl font-normal tracking-tight text-[#ededed]">
             Campaign overview
           </h1>
-          <p className="text-xs text-[#4b5563] mt-1">
+          <p className="text-xs text-[#a1a1a6] mt-1">
             Real-time deliverability and transmission metrics via Brevo
           </p>
         </div>
 
         <Link
           to="/compose"
-          className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-md bg-[#3981f6] hover:bg-[#2563eb] text-white font-medium text-xs transition-colors cursor-pointer shrink-0 shadow-sm"
+          className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-md bg-[#ededed] hover:bg-white text-[#100e0b] font-medium text-xs transition-colors cursor-pointer shrink-0"
         >
           <HiOutlinePlus size={14} />
           <span>New campaign</span>
         </Link>
       </div>
 
-      {/* Modern Minimal Stats Row */}
+      {/* 3 Quiet Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {stats.map((stat) => (
+        {stats.map(({ label, value, detail, accent }) => (
           <div
-            key={stat.label}
-            className={`unslop-card p-5 bg-white border border-[rgba(17,24,39,0.08)] ${stat.borderTop} flex flex-col justify-between`}
+            key={label}
+            className="unslop-card p-5 border border-[rgba(237,237,237,0.08)] bg-[#161618]"
           >
-            <div>
-              <div className="text-xs text-[#4b5563] font-normal">{stat.label}</div>
-              <div
-                className={`text-3xl font-normal tracking-tight mt-2 tabular-nums font-mono ${stat.accent}`}
-              >
-                {stat.value}
-              </div>
+            <p className="text-xs text-[#85858b] mb-2">{label}</p>
+            <div className="flex items-baseline gap-2">
+              <span className={`text-3xl font-medium tracking-tight tabular-nums ${accent}`}>
+                {value}
+              </span>
             </div>
-            <div className="text-xs text-[#6b7280] mt-3">{stat.detail}</div>
+            <p className="text-xs text-[#a1a1a6] mt-2">{detail}</p>
           </div>
         ))}
       </div>
 
       {/* Recent Dispatches Section */}
-      <div className="unslop-card bg-white border border-[rgba(17,24,39,0.08)] overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-[rgba(17,24,39,0.08)] bg-[#f8fafc] flex items-center justify-between">
-          <h2 className="text-xs font-medium text-[#111827]">Recent dispatches</h2>
+      <div className="unslop-card border border-[rgba(237,237,237,0.08)] bg-[#161618] overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-[rgba(237,237,237,0.08)] flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-[#ededed]">Recent campaigns</h2>
+            <p className="text-xs text-[#85858b] mt-0.5">Latest dispatches from this workspace</p>
+          </div>
+
           <Link
             to="/history"
-            className="text-xs text-[#3981f6] hover:text-[#1d4ed8] flex items-center gap-1 transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-[#a1a1a6] hover:text-[#ededed] transition-colors"
           >
             <span>View all</span>
             <HiOutlineArrowRight size={12} />
@@ -140,44 +140,44 @@ export default function Dashboard() {
         </div>
 
         {recentEmails.length === 0 ? (
-          <div className="p-12 text-center">
-            <p className="text-xs text-[#4b5563]">No email campaigns sent yet</p>
+          <div className="py-14 text-center px-4">
+            <p className="text-sm text-[#ededed]">No campaigns dispatched yet</p>
+            <p className="text-xs text-[#85858b] mt-1 max-w-sm mx-auto">
+              Create your first bulk email campaign using the composer.
+            </p>
             <Link
               to="/compose"
-              className="inline-block mt-3 text-xs text-[#3981f6] hover:text-[#1d4ed8] underline"
+              className="inline-flex items-center gap-1.5 mt-4 h-8 px-3 rounded-md bg-[#232325] text-xs text-[#ededed] hover:bg-[#2b2b2e] border border-[rgba(237,237,237,0.08)] transition-colors"
             >
-              Compose your first campaign
+              <HiOutlinePlus size={13} />
+              <span>Compose first campaign</span>
             </Link>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="text-[#6b7280] bg-[#f8fafc] border-b border-[rgba(17,24,39,0.06)]">
-                <tr>
-                  <th className="py-2.5 px-4 font-normal">Subject</th>
-                  <th className="py-2.5 px-4 font-normal">Recipients</th>
-                  <th className="py-2.5 px-4 font-normal">Status</th>
-                  <th className="py-2.5 px-4 font-normal text-right">Date</th>
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-[rgba(237,237,237,0.08)] text-[#85858b]">
+                  <th className="px-5 py-3 font-normal">Subject</th>
+                  <th className="px-5 py-3 font-normal">Recipients</th>
+                  <th className="px-5 py-3 font-normal">Status</th>
+                  <th className="px-5 py-3 font-normal text-right">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[rgba(17,24,39,0.06)]">
+              <tbody className="divide-y divide-[rgba(237,237,237,0.06)]">
                 {recentEmails.map((email) => (
-                  <tr
-                    key={email._id}
-                    className="hover:bg-[#f8fafc] transition-colors"
-                  >
-                    <td className="py-3 px-4 font-medium text-[#111827] max-w-[260px] truncate">
+                  <tr key={email._id} className="hover:bg-[#1a1a1c] transition-colors">
+                    <td className="px-5 py-3.5 text-[#ededed] font-normal truncate max-w-md">
                       {email.subject}
                     </td>
-                    <td className="py-3 px-4 text-[#4b5563] tabular-nums font-mono">
-                      {email.recipients?.length || 0} recipient
-                      {email.recipients?.length !== 1 ? 's' : ''}
+                    <td className="px-5 py-3.5 text-[#a1a1a6] tabular-nums">
+                      {email.recipients?.length || 0} recipient{(email.recipients?.length || 0) !== 1 ? 's' : ''}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="px-5 py-3.5">
                       <StatusBadge status={email.status} />
                     </td>
-                    <td className="py-3 px-4 text-right text-[#6b7280] tabular-nums font-mono">
-                      {formatDate(email.createdAt)}
+                    <td className="px-5 py-3.5 text-[#85858b] text-right tabular-nums">
+                      {formatDate(email.sentAt || email.createdAt)}
                     </td>
                   </tr>
                 ))}
