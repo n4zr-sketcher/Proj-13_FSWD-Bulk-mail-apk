@@ -1,6 +1,10 @@
 /**
  * Register (Unslop pass)
- * Minimalist registration card adhering to graphite tokens and clean inputs.
+ * Minimal registration card adhering to the modern minimal palette:
+ * - Primary CTA: rgb(57, 129, 246)
+ * - Text: rgb(245, 245, 245)
+ * - Subtle accents: rgb(220, 242, 255)
+ * - Errors: rgb(241, 68, 68)
  */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -55,7 +59,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen text-[#ededed] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen text-[#f5f5f5] flex items-center justify-center p-4 relative overflow-hidden">
       <AuraBackground fixed={true} />
 
       {toast && (
@@ -67,23 +71,23 @@ export default function Register() {
       )}
 
       {/* Auth Card */}
-      <div className="w-full max-w-sm unslop-card p-7 sm:p-8 border border-[rgba(237,237,237,0.08)] bg-[#161618] relative z-10 shadow-2xl">
+      <div className="w-full max-w-sm unslop-card p-7 sm:p-8 border border-[rgba(245,245,245,0.08)] bg-[#121722] relative z-10 shadow-2xl">
         <div className="mb-6 text-center">
-          <div className="w-8 h-8 rounded-md bg-[#232325] border border-[rgba(237,237,237,0.1)] flex items-center justify-center text-[#10b981] mx-auto mb-3">
-            <HiOutlinePaperAirplane size={16} />
+          <div className="w-8 h-8 rounded-md bg-[#3981f6]/10 border border-[#3981f6]/25 flex items-center justify-center text-[#3981f6] mx-auto mb-3">
+            <HiOutlinePaperAirplane size={16} className="-rotate-12" />
           </div>
-          <h1 className="text-lg font-medium text-[#ededed]">Create account</h1>
-          <p className="text-xs text-[#85858b] mt-1">Set up workspace admin credentials</p>
+          <h1 className="text-lg font-medium text-[#f5f5f5]">Create account</h1>
+          <p className="text-xs text-[#64748b] mt-1">Set up workspace admin credentials</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="name" className="block text-xs text-[#a1a1a6]">
+            <label htmlFor="name" className="block text-xs text-[#9ca3af]">
               Name
             </label>
             <div className="relative">
               <HiOutlineUser
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#85858b]"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]"
                 size={15}
               />
               <input
@@ -92,19 +96,19 @@ export default function Register() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full bg-[#1c1c1f] border border-[rgba(237,237,237,0.08)] rounded-md pl-9 pr-3.5 py-2 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#4cc38a] transition-colors"
+                className="w-full bg-[#0e121a] border border-[rgba(245,245,245,0.08)] rounded-md pl-9 pr-3.5 py-2 text-xs text-[#f5f5f5] placeholder-[#64748b] focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors"
                 placeholder="Full name"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="email" className="block text-xs text-[#a1a1a6]">
+            <label htmlFor="email" className="block text-xs text-[#9ca3af]">
               Email
             </label>
             <div className="relative">
               <HiOutlineEnvelope
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#85858b]"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]"
                 size={15}
               />
               <input
@@ -113,19 +117,19 @@ export default function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-[#1c1c1f] border border-[rgba(237,237,237,0.08)] rounded-md pl-9 pr-3.5 py-2 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#4cc38a] transition-colors"
+                className="w-full bg-[#0e121a] border border-[rgba(245,245,245,0.08)] rounded-md pl-9 pr-3.5 py-2 text-xs text-[#f5f5f5] placeholder-[#64748b] focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors"
                 placeholder="admin@example.com"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="password" className="block text-xs text-[#a1a1a6]">
+            <label htmlFor="password" className="block text-xs text-[#9ca3af]">
               Password
             </label>
             <div className="relative">
               <HiOutlineLockClosed
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#85858b]"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]"
                 size={15}
               />
               <input
@@ -135,13 +139,13 @@ export default function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full bg-[#1c1c1f] border border-[rgba(237,237,237,0.08)] rounded-md pl-9 pr-9 py-2 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#4cc38a] transition-colors"
+                className="w-full bg-[#0e121a] border border-[rgba(245,245,245,0.08)] rounded-md pl-9 pr-9 py-2 text-xs text-[#f5f5f5] placeholder-[#64748b] focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors"
                 placeholder="••••••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#85858b] hover:text-[#ededed] p-0.5 cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748b] hover:text-[#f5f5f5] p-0.5 cursor-pointer"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <HiOutlineEyeSlash size={15} /> : <HiOutlineEye size={15} />}
@@ -152,15 +156,15 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 h-9 rounded-md bg-[#ededed] hover:bg-white text-[#100e0b] font-medium text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+            className="w-full mt-2 h-9 rounded-md bg-[#3981f6] hover:bg-[#2563eb] text-[#f5f5f5] font-medium text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-sm"
           >
             {loading ? 'Creating...' : 'Create account'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-[#85858b] mt-5">
+        <p className="text-center text-xs text-[#64748b] mt-5">
           Already registered?{' '}
-          <Link to="/login" className="text-[#ededed] hover:underline">
+          <Link to="/login" className="text-[#3981f6] hover:text-[#dcf2ff] hover:underline">
             Sign in
           </Link>
         </p>

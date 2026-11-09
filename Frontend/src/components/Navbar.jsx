@@ -1,9 +1,10 @@
 /**
  * Navbar (Unslop pass)
- * Quiet, engineered application header.
- * - Solid typography without gradient wordmarks or sparkle emojis.
- * - Active state is a calm surface step (#232325) with a hairline, not a gradient glow.
- * - Consistent 36px control heights and sentence case labels.
+ * Modern minimal application header using the calibrated palette:
+ * - Brand Accent: rgb(57, 129, 246) [#3981f6]
+ * - Crisp Light Text: rgb(245, 245, 245) [#f5f5f5]
+ * - Subtle Ice Tint: rgb(220, 242, 255) [#dcf2ff]
+ * - Alert / Destructive: rgb(241, 68, 68) [#f14444]
  */
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -34,35 +35,39 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[rgba(237,237,237,0.08)] bg-[#100e0b]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-[rgba(245,245,245,0.08)] bg-[#0b0e14]/90 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         {/* Brand Wordmark & Mark */}
         <div className="flex items-center gap-6">
-          <NavLink to="/dashboard" className="flex items-center gap-2.5 text-[#ededed]">
-            <div className="w-7 h-7 rounded-md bg-[#232325] border border-[rgba(237,237,237,0.1)] flex items-center justify-center text-[#10b981]">
-              <HiOutlinePaperAirplane size={15} />
+          <NavLink to="/dashboard" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-md bg-[#3981f6]/10 border border-[#3981f6]/30 flex items-center justify-center text-[#3981f6]">
+              <HiOutlinePaperAirplane size={14} className="-rotate-12" />
             </div>
-            <span className="text-sm font-semibold tracking-tight text-[#ededed]">
+            <span className="text-sm font-semibold tracking-tight text-[#f5f5f5]">
               BulkMail
             </span>
           </NavLink>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1.5">
             {navItems.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 h-8 px-3 rounded-md text-[13px] font-normal transition-colors ${
+                  `flex items-center gap-2 h-8 px-3 rounded-md text-[13px] transition-colors ${
                     isActive
-                      ? 'bg-[#232325] text-[#ededed] border border-[rgba(237,237,237,0.08)]'
-                      : 'text-[#a1a1a6] hover:text-[#ededed] hover:bg-[#19191b]'
+                      ? 'bg-[#3981f6]/10 text-[#dcf2ff] border border-[#3981f6]/25 font-medium'
+                      : 'text-[#9ca3af] hover:text-[#f5f5f5] hover:bg-[#171e2c]'
                   }`
                 }
               >
-                <Icon size={14} className="text-[#85858b]" />
-                <span>{label}</span>
+                {({ isActive }) => (
+                  <>
+                    <Icon size={14} className={isActive ? 'text-[#3981f6]' : 'text-[#64748b]'} />
+                    <span>{label}</span>
+                  </>
+                )}
               </NavLink>
             ))}
           </nav>
@@ -70,16 +75,16 @@ export default function Navbar() {
 
         {/* User Status & Sign Out */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs text-[#a1a1a6]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
-            <span className="text-[#ededed] font-medium">{user?.name || 'Admin'}</span>
-            <span className="text-[#85858b] truncate max-w-[160px]">({user?.email})</span>
+          <div className="flex items-center gap-2 text-xs text-[#9ca3af]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3981f6]" />
+            <span className="text-[#f5f5f5] font-medium">{user?.name || 'Admin'}</span>
+            <span className="text-[#64748b] truncate max-w-[160px]">({user?.email})</span>
           </div>
 
           <button
             type="button"
             onClick={handleLogout}
-            className="flex items-center gap-1.5 h-8 px-2.5 rounded-md text-xs text-[#a1a1a6] hover:text-[#ededed] hover:bg-[#19191b] border border-[rgba(237,237,237,0.08)] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 h-8 px-2.5 rounded-md text-xs text-[#9ca3af] hover:text-[#f14444] hover:bg-[#f14444]/10 hover:border-[#f14444]/25 border border-[rgba(245,245,245,0.08)] transition-colors cursor-pointer"
             title="Sign out"
           >
             <HiOutlineArrowRightOnRectangle size={14} />
@@ -92,7 +97,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-1.5 text-[#a1a1a6] hover:text-[#ededed] rounded-md hover:bg-[#19191b] cursor-pointer"
+            className="p-1.5 text-[#9ca3af] hover:text-[#f5f5f5] rounded-md hover:bg-[#171e2c] cursor-pointer"
             aria-label="Toggle navigation"
           >
             {mobileOpen ? <HiOutlineXMark size={20} /> : <HiOutlineBars3 size={20} />}
@@ -100,33 +105,37 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[rgba(237,237,237,0.08)] bg-[#141415] px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-[rgba(245,245,245,0.08)] bg-[#0e121a] px-4 py-3 space-y-1">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 h-9 px-3 rounded-md text-[13px] ${
+                `flex items-center gap-2.5 h-9 px-3 rounded-md text-xs font-normal transition-colors ${
                   isActive
-                    ? 'bg-[#232325] text-[#ededed]'
-                    : 'text-[#a1a1a6] hover:text-[#ededed]'
+                    ? 'bg-[#3981f6]/10 text-[#dcf2ff] border border-[#3981f6]/25'
+                    : 'text-[#9ca3af] hover:text-[#f5f5f5] hover:bg-[#171e2c]'
                 }`
               }
             >
-              <Icon size={15} />
-              <span>{label}</span>
+              {({ isActive }) => (
+                <>
+                  <Icon size={15} className={isActive ? 'text-[#3981f6]' : 'text-[#64748b]'} />
+                  <span>{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
 
-          <div className="pt-2 border-t border-[rgba(237,237,237,0.08)] flex items-center justify-between">
-            <span className="text-xs text-[#85858b]">{user?.email}</span>
+          <div className="pt-3 border-t border-[rgba(245,245,245,0.08)] flex items-center justify-between text-xs text-[#9ca3af]">
+            <span className="truncate">{user?.email}</span>
             <button
               type="button"
               onClick={handleLogout}
-              className="text-xs text-[#e5484d] hover:underline"
+              className="text-[#f14444] hover:underline"
             >
               Sign out
             </button>
