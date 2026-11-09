@@ -15,7 +15,7 @@ import History from './pages/History';
 
 function Layout() {
   return (
-    <div className="min-h-screen text-[#f5f5f5] relative overflow-hidden flex flex-col">
+    <div className="min-h-screen text-[#111827] relative overflow-hidden flex flex-col">
       {/* Subtle Aura atmosphere */}
       <AuraBackground fixed={true} />
 
@@ -28,7 +28,7 @@ function Layout() {
       </main>
 
       {/* Minimalist footer */}
-      <footer className="relative z-[1] w-full border-t border-[rgba(245,245,245,0.08)] py-5 text-center text-xs text-[#64748b]">
+      <footer className="relative z-[1] w-full border-t border-[rgba(17,24,39,0.08)] py-5 text-center text-xs text-[#6b7280]">
         <p>BulkMail &bull; Brevo Transactional Engine</p>
       </footer>
     </div>

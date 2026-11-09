@@ -1,9 +1,9 @@
 /**
- * StatusBadge (Unslop pass)
- * Minimalist semantic status tag tuned to user palette:
- * - Delivered/Sent: Blue/Ice theme (rgb(57, 129, 246) + rgb(220, 242, 255))
- * - Failed: Alert Red (rgb(241, 68, 68))
- * - Pending: Neutral slate (rgb(245, 245, 245) tint)
+ * StatusBadge (Unslop pass - Light Theme)
+ * Minimalist semantic status tag tuned to user palette on light background:
+ * - Delivered/Sent: Ice Blue background with Cobalt text (rgb(220, 242, 255) + rgb(57, 129, 246))
+ * - Failed: Alert Red tint (rgb(241, 68, 68))
+ * - Pending: Neutral slate tint (rgb(245, 245, 245))
  */
 export default function StatusBadge({ status }) {
   const normalized = (status || 'pending').toLowerCase();
@@ -11,23 +11,23 @@ export default function StatusBadge({ status }) {
   const configs = {
     sent: {
       label: 'Delivered',
-      bg: 'bg-[#3981f6]/10 border-[#3981f6]/30 text-[#dcf2ff]',
+      bg: 'bg-[#dcf2ff] border-[#3981f6]/30 text-[#1d4ed8]',
       dot: 'bg-[#3981f6]',
     },
     delivered: {
       label: 'Delivered',
-      bg: 'bg-[#3981f6]/10 border-[#3981f6]/30 text-[#dcf2ff]',
+      bg: 'bg-[#dcf2ff] border-[#3981f6]/30 text-[#1d4ed8]',
       dot: 'bg-[#3981f6]',
     },
     failed: {
       label: 'Failed',
-      bg: 'bg-[#f14444]/10 border-[#f14444]/30 text-[#f14444]',
+      bg: 'bg-[#fee2e2] border-[#f14444]/30 text-[#dc2626]',
       dot: 'bg-[#f14444]',
     },
     pending: {
       label: 'Pending',
-      bg: 'bg-[#dcf2ff]/5 border-[rgba(245,245,245,0.12)] text-[#9ca3af]',
-      dot: 'bg-[#9ca3af]',
+      bg: 'bg-[#f1f5f9] border-[rgba(17,24,39,0.12)] text-[#6b7280]',
+      dot: 'bg-[#6b7280]',
     },
   };
 

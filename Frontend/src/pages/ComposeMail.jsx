@@ -1,9 +1,8 @@
 /**
- * ComposeMail (Unslop pass)
+ * ComposeMail (Unslop pass - Light Theme)
  * Focused email composer with clean recipient parsing, template presets, and preview.
  * - Colors: rgb(57, 129, 246), rgb(241, 68, 68), rgb(245, 245, 245), rgb(220, 242, 255).
- * - Clean input states, sentence case, zero emoji.
- * - Precision Dispatch action button.
+ * - Crisp white surfaces, light mode inputs, sentence case, zero emoji.
  */
 import { useState, useMemo } from 'react';
 import {
@@ -138,23 +137,23 @@ export default function ComposeMail() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-normal tracking-tight text-[#f5f5f5]">
+          <h1 className="text-2xl font-normal tracking-tight text-[#111827]">
             Compose campaign
           </h1>
-          <p className="text-xs text-[#9ca3af] mt-1">
+          <p className="text-xs text-[#4b5563] mt-1">
             Send bulk transactional messages via Brevo API relay
           </p>
         </div>
 
         {/* Template Presets */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs text-[#64748b] mr-1">Presets:</span>
+          <span className="text-xs text-[#6b7280] mr-1">Presets:</span>
           {TEMPLATES.map((tmpl) => (
             <button
               key={tmpl.name}
               type="button"
               onClick={() => handleApplyTemplate(tmpl)}
-              className="h-7 px-2.5 rounded-md bg-[#121722] hover:bg-[#171e2c] text-xs text-[#9ca3af] hover:text-[#dcf2ff] border border-[rgba(245,245,245,0.08)] hover:border-[#3981f6]/30 transition-colors cursor-pointer"
+              className="h-7 px-2.5 rounded-md bg-white hover:bg-[#f1f5f9] text-xs text-[#4b5563] hover:text-[#111827] border border-[rgba(17,24,39,0.08)] hover:border-[#3981f6]/30 transition-colors cursor-pointer shadow-2xs"
             >
               {tmpl.name}
             </button>
@@ -164,12 +163,12 @@ export default function ComposeMail() {
 
       <form onSubmit={handleSend} className="space-y-5">
         {/* Subject input */}
-        <div className="unslop-card p-5 bg-[#121722] border border-[rgba(245,245,245,0.08)] space-y-2">
+        <div className="unslop-card p-5 bg-white border border-[rgba(17,24,39,0.08)] shadow-sm space-y-2">
           <div className="flex items-center justify-between">
-            <label htmlFor="subject" className="text-xs text-[#f5f5f5] font-medium">
+            <label htmlFor="subject" className="text-xs text-[#111827] font-medium">
               Subject
             </label>
-            <span className="text-xs text-[#64748b] tabular-nums font-mono">
+            <span className="text-xs text-[#6b7280] tabular-nums font-mono">
               {subject.length} chars
             </span>
           </div>
@@ -180,22 +179,22 @@ export default function ComposeMail() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             required
-            className="w-full bg-[#0e121a] border border-[rgba(245,245,245,0.08)] rounded-md px-3.5 py-2 text-xs text-[#f5f5f5] placeholder-[#64748b] focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors"
+            className="w-full bg-[#f8fafc] border border-[rgba(17,24,39,0.12)] rounded-md px-3.5 py-2 text-xs text-[#111827] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors"
             placeholder="Subject line"
           />
         </div>
 
         {/* Recipients input */}
-        <div className="unslop-card p-5 bg-[#121722] border border-[rgba(245,245,245,0.08)] space-y-2">
+        <div className="unslop-card p-5 bg-white border border-[rgba(17,24,39,0.08)] shadow-sm space-y-2">
           <div className="flex items-center justify-between">
-            <label htmlFor="recipients" className="text-xs text-[#f5f5f5] font-medium">
-              Recipients <span className="text-[#64748b] font-normal">(comma or newline separated)</span>
+            <label htmlFor="recipients" className="text-xs text-[#111827] font-medium">
+              Recipients <span className="text-[#6b7280] font-normal">(comma or newline separated)</span>
             </label>
 
             <button
               type="button"
               onClick={handleAddSelf}
-              className="text-xs text-[#3981f6] hover:text-[#dcf2ff] underline transition-colors cursor-pointer"
+              className="text-xs text-[#3981f6] hover:text-[#1d4ed8] underline transition-colors cursor-pointer"
             >
               + Add my email
             </button>
@@ -206,18 +205,18 @@ export default function ComposeMail() {
             value={recipientsInput}
             onChange={(e) => setRecipientsInput(e.target.value)}
             rows={3}
-            className="w-full bg-[#0e121a] border border-[rgba(245,245,245,0.08)] rounded-md px-3.5 py-2 text-xs font-mono text-[#f5f5f5] placeholder-[#64748b] focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors resize-y"
+            className="w-full bg-[#f8fafc] border border-[rgba(17,24,39,0.12)] rounded-md px-3.5 py-2 text-xs font-mono text-[#111827] placeholder-[#94a3b8] focus:bg-white focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 transition-colors resize-y"
             placeholder="alex@domain.com, jordan@company.org"
           />
 
           {rawList.length > 0 && (
             <div className="flex items-center gap-3 pt-1 text-xs tabular-nums">
-              <span className="text-[#3981f6] flex items-center gap-1 font-mono">
+              <span className="text-[#3981f6] flex items-center gap-1 font-mono font-medium">
                 <HiOutlineCheckCircle size={13} />
                 {validRecipients.length} valid
               </span>
               {invalidRecipients.length > 0 && (
-                <span className="text-[#f14444] flex items-center gap-1 font-mono">
+                <span className="text-[#f14444] flex items-center gap-1 font-mono font-medium">
                   <HiOutlineExclamationCircle size={13} />
                   {invalidRecipients.length} invalid format
                 </span>
@@ -227,15 +226,15 @@ export default function ComposeMail() {
         </div>
 
         {/* Editor & Preview Viewport */}
-        <div className="unslop-card bg-[#121722] border border-[rgba(245,245,245,0.08)] overflow-hidden">
-          <div className="px-4 py-2 border-b border-[rgba(245,245,245,0.08)] flex items-center gap-2 bg-[#0e121a]">
+        <div className="unslop-card bg-white border border-[rgba(17,24,39,0.08)] shadow-sm overflow-hidden">
+          <div className="px-4 py-2 border-b border-[rgba(17,24,39,0.08)] flex items-center gap-2 bg-[#f8fafc]">
             <button
               type="button"
               onClick={() => setActiveTab('editor')}
               className={`flex items-center gap-1.5 h-7 px-2.5 rounded text-xs transition-colors cursor-pointer ${
                 activeTab === 'editor'
-                  ? 'bg-[#3981f6]/10 text-[#dcf2ff] border border-[#3981f6]/30 font-medium'
-                  : 'text-[#64748b] hover:text-[#f5f5f5]'
+                  ? 'bg-white text-[#1d4ed8] border border-[rgba(17,24,39,0.08)] shadow-2xs font-medium'
+                  : 'text-[#6b7280] hover:text-[#111827]'
               }`}
             >
               <HiOutlineCodeBracket size={13} />
@@ -247,8 +246,8 @@ export default function ComposeMail() {
               onClick={() => setActiveTab('preview')}
               className={`flex items-center gap-1.5 h-7 px-2.5 rounded text-xs transition-colors cursor-pointer ${
                 activeTab === 'preview'
-                  ? 'bg-[#3981f6]/10 text-[#dcf2ff] border border-[#3981f6]/30 font-medium'
-                  : 'text-[#64748b] hover:text-[#f5f5f5]'
+                  ? 'bg-white text-[#1d4ed8] border border-[rgba(17,24,39,0.08)] shadow-2xs font-medium'
+                  : 'text-[#6b7280] hover:text-[#111827]'
               }`}
             >
               <HiOutlineEye size={13} />
@@ -262,12 +261,12 @@ export default function ComposeMail() {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 rows={12}
-                className="w-full bg-[#0e121a] border border-[rgba(245,245,245,0.08)] rounded-md p-3 font-mono text-xs text-[#f5f5f5] focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 resize-y leading-relaxed"
+                className="w-full bg-[#f8fafc] border border-[rgba(17,24,39,0.1)] rounded-md p-3 font-mono text-xs text-[#111827] focus:bg-white focus:outline-none focus:border-[#3981f6] focus:ring-1 focus:ring-[#3981f6]/30 resize-y leading-relaxed"
                 placeholder="Enter email HTML markup..."
               />
             </div>
           ) : (
-            <div className="p-6 bg-[#0e121a] min-h-[300px] flex items-center justify-center">
+            <div className="p-6 bg-[#f1f5f9] min-h-[300px] flex items-center justify-center">
               <div
                 className="w-full max-w-xl bg-white rounded-md p-6 text-slate-900 shadow-sm border border-slate-200"
                 dangerouslySetInnerHTML={{ __html: body }}
@@ -285,7 +284,7 @@ export default function ComposeMail() {
               setRecipientsInput('');
               setBody(TEMPLATES[0].body);
             }}
-            className="h-9 px-4 rounded-md text-xs text-[#9ca3af] hover:text-[#f14444] hover:bg-[#f14444]/10 hover:border-[#f14444]/25 border border-[rgba(245,245,245,0.08)] transition-colors cursor-pointer"
+            className="h-9 px-4 rounded-md text-xs text-[#4b5563] hover:text-[#f14444] hover:bg-[#fee2e2]/30 hover:border-[#f14444]/25 border border-[rgba(17,24,39,0.08)] bg-white transition-colors cursor-pointer"
           >
             Clear form
           </button>
@@ -293,7 +292,7 @@ export default function ComposeMail() {
           <button
             type="submit"
             disabled={!isFormValid || sending}
-            className="flex items-center gap-2 h-9 px-5 rounded-md bg-[#3981f6] hover:bg-[#2563eb] text-[#f5f5f5] font-medium text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-sm"
+            className="flex items-center gap-2 h-9 px-5 rounded-md bg-[#3981f6] hover:bg-[#2563eb] text-white font-medium text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-sm"
           >
             <HiOutlinePaperAirplane size={13} />
             <span>

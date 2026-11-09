@@ -1,9 +1,9 @@
 /**
- * Toast (Unslop pass)
+ * Toast (Unslop pass - Light Theme)
  * Minimal notification toast adhering to the user's color palette:
  * - Success: rgb(57, 129, 246)
  * - Error: rgb(241, 68, 68)
- * - Text: rgb(245, 245, 245)
+ * - Surface: Clean White with subtle shadow
  */
 import { useEffect, useState } from 'react';
 import { HiOutlineCheckCircle, HiOutlineExclamationCircle, HiOutlineXMark } from 'react-icons/hi2';
@@ -34,7 +34,7 @@ export default function Toast({ message, type = 'success', onClose }) {
   return (
     <div
       role="alert"
-      className={`fixed top-5 right-5 z-[100] flex items-start gap-3 px-4 py-3 rounded-lg border bg-[#121722] border-[rgba(245,245,245,0.12)] shadow-xl transition-all duration-200 min-w-[300px] max-w-md ${
+      className={`fixed top-5 right-5 z-[100] flex items-start gap-3 px-4 py-3 rounded-lg border bg-white border-[rgba(17,24,39,0.12)] shadow-xl transition-all duration-200 min-w-[300px] max-w-md ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
       }`}
     >
@@ -46,14 +46,14 @@ export default function Toast({ message, type = 'success', onClose }) {
         )}
       </div>
 
-      <div className="flex-1 text-[13px] text-[#f5f5f5] leading-snug">
+      <div className="flex-1 text-[13px] text-[#111827] leading-snug">
         {message}
       </div>
 
       <button
         type="button"
         onClick={handleClose}
-        className="text-[#64748b] hover:text-[#f5f5f5] transition-colors p-0.5 rounded cursor-pointer"
+        className="text-[#6b7280] hover:text-[#111827] transition-colors p-0.5 rounded cursor-pointer"
         aria-label="Dismiss notification"
       >
         <HiOutlineXMark size={14} />
