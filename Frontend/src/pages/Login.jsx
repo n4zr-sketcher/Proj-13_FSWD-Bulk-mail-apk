@@ -1,6 +1,8 @@
 /**
- * Login — elegant modern authentication page with ambient glow,
- * leading input icons, password reveal toggle, and smooth loading state.
+ * Login (Unslop pass)
+ * Minimalist, engineered sign in card.
+ * - Quiet graphite palette, sentence case, no decorative glow or gradient wordmarks.
+ * - Solid primary button and quiet password reveal.
  */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -48,8 +50,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen text-white flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Aura Gradient: Violet Horizon Background */}
+    <div className="min-h-screen text-[#ededed] flex items-center justify-center p-4 relative overflow-hidden">
       <AuraBackground fixed={true} />
 
       {toast && (
@@ -60,37 +61,25 @@ export default function Login() {
         />
       )}
 
-      {/* Centered Glassmorphic Authentication Card */}
-      <div className="w-full max-w-md rounded-2xl glass-panel p-8 sm:p-10 border border-white/10 relative z-10 shadow-2xl shadow-emerald-950/40">
-        {/* Brand Icon & Heading */}
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white mx-auto shadow-lg shadow-emerald-500/30 mb-4">
-            <HiOutlinePaperAirplane className="text-2xl rotate-[-15deg]" />
+      {/* Auth Card */}
+      <div className="w-full max-w-sm unslop-card p-7 sm:p-8 border border-[rgba(237,237,237,0.08)] bg-[#161618] relative z-10 shadow-2xl">
+        <div className="mb-6 text-center">
+          <div className="w-8 h-8 rounded-md bg-[#232325] border border-[rgba(237,237,237,0.1)] flex items-center justify-center text-[#10b981] mx-auto mb-3">
+            <HiOutlinePaperAirplane size={16} />
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">
-            Welcome to{' '}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-              BULKMAIL
-            </span>
-          </h1>
-          <p className="text-xs text-neutral-400 mt-1.5">
-            Sign in to access your dashboard and dispatch campaigns.
-          </p>
+          <h1 className="text-lg font-medium text-[#ededed]">Sign in to BulkMail</h1>
+          <p className="text-xs text-[#85858b] mt-1">Admin campaign management console</p>
         </div>
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1.5"
-            >
-              Email Address
+          <div className="space-y-1.5">
+            <label htmlFor="email" className="block text-xs text-[#a1a1a6]">
+              Email
             </label>
             <div className="relative">
               <HiOutlineEnvelope
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400"
-                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#85858b]"
+                size={15}
               />
               <input
                 id="email"
@@ -98,23 +87,20 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
+                className="w-full bg-[#1c1c1f] border border-[rgba(237,237,237,0.08)] rounded-md pl-9 pr-3.5 py-2 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#4cc38a] transition-colors"
                 placeholder="admin@example.com"
               />
             </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1.5"
-            >
+          <div className="space-y-1.5">
+            <label htmlFor="password" className="block text-xs text-[#a1a1a6]">
               Password
             </label>
             <div className="relative">
               <HiOutlineLockClosed
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400"
-                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#85858b]"
+                size={15}
               />
               <input
                 id="password"
@@ -122,16 +108,16 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
+                className="w-full bg-[#1c1c1f] border border-[rgba(237,237,237,0.08)] rounded-md pl-9 pr-9 py-2 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#4cc38a] transition-colors"
                 placeholder="••••••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white p-1"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#85858b] hover:text-[#ededed] p-0.5 cursor-pointer"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? <HiOutlineEyeSlash size={16} /> : <HiOutlineEye size={16} />}
+                {showPassword ? <HiOutlineEyeSlash size={15} /> : <HiOutlineEye size={15} />}
               </button>
             </div>
           </div>
@@ -139,27 +125,16 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+            className="w-full mt-2 h-9 rounded-md bg-[#ededed] hover:bg-white text-[#100e0b] font-medium text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
           >
-            {loading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Signing In...</span>
-              </>
-            ) : (
-              'Sign In to Console'
-            )}
+            {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
 
-        {/* Footer switch link */}
-        <p className="text-center text-xs text-neutral-400 mt-6">
-          Don&apos;t have an admin account?{' '}
-          <Link
-            to="/register"
-            className="font-semibold text-emerald-400 hover:text-emerald-300 transition-colors underline"
-          >
-            Create Account
+        <p className="text-center text-xs text-[#85858b] mt-5">
+          Need an administrator account?{' '}
+          <Link to="/register" className="text-[#ededed] hover:underline">
+            Register
           </Link>
         </p>
       </div>

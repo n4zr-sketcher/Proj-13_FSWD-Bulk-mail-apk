@@ -1,20 +1,14 @@
 /**
- * History — comprehensive email dispatch logs.
- * Features:
- * - Search by subject or recipient
- * - Filter by status (All, Delivered, Failed, Pending)
- * - Expandable cards with HTML preview, recipient chips, and error diagnosis
- * - One-click delete and copy functionality
+ * History (Unslop pass)
+ * Complete transmission audit logs with quiet search, status filtering, and expandable inspect rows.
  */
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineChevronDown,
   HiOutlineChevronUp,
   HiOutlineTrash,
-  HiOutlineClock,
-  HiOutlineEnvelope,
   HiOutlineArrowPath,
   HiOutlineXMark,
   HiOutlineCheck,
@@ -34,15 +28,13 @@ export default function History() {
   const [toast, setToast] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
 
-  const navigate = useNavigate();
-
   const fetchEmails = async () => {
     try {
       const res = await api.get('/emails');
       setEmails(res.data);
     } catch (err) {
       console.error('Failed to load history:', err);
-      setToast({ message: 'Failed to fetch email history from server', type: 'error' });
+      setToast({ message: 'Failed to load history records', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -52,7 +44,6 @@ export default function History() {
     fetchEmails();
   }, []);
 
-  // Filter emails based on search query and tab status
   const filtered = useMemo(() => {
     return emails.filter((email) => {
       const matchesSearch =
@@ -79,10 +70,10 @@ export default function History() {
     try {
       await api.delete(`/emails/${id}`);
       setEmails((prev) => prev.filter((item) => item._id !== id));
-      setToast({ message: 'Campaign record deleted successfully', type: 'success' });
+      setToast({ message: 'Campaign record deleted', type: 'success' });
       if (expandedId === id) setExpandedId(null);
     } catch (err) {
-      setToast({ message: 'Failed to delete email record', type: 'error' });
+      setToast({ message: 'Failed to delete record', type: 'error' });
     }
   };
 
@@ -90,7 +81,7 @@ export default function History() {
     e.stopPropagation();
     navigator.clipboard.writeText(body);
     setCopiedId(id);
-    setToast({ message: 'Email HTML copied to clipboard', type: 'success' });
+    setToast({ message: 'HTML copied to clipboard', type: 'success' });
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -107,11 +98,10 @@ export default function History() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
-        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-neutral-400 text-xs font-semibold uppercase tracking-widest">
-          Loading Transmission Logs...
-        </p>
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <span className="text-xs text-[#85858b] uppercase tracking-wider">
+          Loading history
+        </span>
       </div>
     );
   }
@@ -129,56 +119,56 @@ export default function History() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Dispatch History
+          <h1 className="text-2xl font-normal tracking-tight text-[#ededed]">
+            Campaign history
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Complete audit trail of all bulk email campaigns and Brevo delivery events.
+          <p className="text-xs text-[#a1a1a6] mt-1">
+            Audit log of all outbound messages and delivery responses
           </p>
         </div>
 
         <button
+          type="button"
           onClick={fetchEmails}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+          className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#1c1c1f] hover:bg-[#232325] text-xs text-[#a1a1a6] hover:text-[#ededed] border border-[rgba(237,237,237,0.08)] transition-colors cursor-pointer shrink-0"
         >
-          <HiOutlineArrowPath size={14} />
-          <span>Refresh Logs</span>
+          <HiOutlineArrowPath size={13} />
+          <span>Refresh</span>
         </button>
       </div>
 
-      {/* Search Bar & Filter Pills */}
-      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
-        {/* Search Input */}
+      {/* Search & Filter row */}
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         <div className="relative flex-1">
-          <HiOutlineMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
+          <HiOutlineMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-[#85858b]" size={15} />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-black/40 border border-white/10 rounded-xl pl-11 pr-10 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
-            placeholder="Search by subject or recipient email..."
+            className="w-full bg-[#161618] border border-[rgba(237,237,237,0.08)] rounded-md pl-9 pr-8 py-2 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#4cc38a] transition-colors"
+            placeholder="Search campaigns"
           />
           {search && (
             <button
+              type="button"
               onClick={() => setSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white p-1"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#85858b] hover:text-[#ededed] p-0.5"
             >
-              <HiOutlineXMark size={16} />
+              <HiOutlineXMark size={14} />
             </button>
           )}
         </div>
 
-        {/* Status Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10 shrink-0 overflow-x-auto">
+        <div className="flex items-center gap-1 bg-[#161618] p-1 rounded-md border border-[rgba(237,237,237,0.08)] shrink-0 overflow-x-auto">
           {FILTER_TABS.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setSelectedFilter(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+              className={`h-7 px-2.5 rounded text-xs font-normal transition-colors cursor-pointer ${
                 selectedFilter === tab
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/20'
-                  : 'text-neutral-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-[#232325] text-[#ededed]'
+                  : 'text-[#85858b] hover:text-[#ededed]'
               }`}
             >
               {tab}
@@ -187,96 +177,77 @@ export default function History() {
         </div>
       </div>
 
-      {/* Campaigns List */}
+      {/* Campaign List */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl glass-panel p-12 text-center border border-white/10">
-          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 mx-auto mb-3">
-            <HiOutlineEnvelope size={22} />
-          </div>
-          <p className="text-sm font-semibold text-white">No campaigns found</p>
-          <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
+        <div className="unslop-card p-12 text-center border border-[rgba(237,237,237,0.08)] bg-[#161618]">
+          <p className="text-sm text-[#ededed]">No campaigns found</p>
+          <p className="text-xs text-[#85858b] mt-1">
             {emails.length === 0
-              ? 'No emails have been dispatched yet. Send your first campaign from the compose window.'
-              : 'No campaigns match your search and filter criteria.'}
+              ? 'No messages have been sent yet.'
+              : 'No campaigns match your search query.'}
           </p>
-          {emails.length === 0 && (
-            <Link
-              to="/compose"
-              className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider hover:bg-emerald-500/30 transition-colors"
-            >
-              Compose Campaign Now
-            </Link>
-          )}
         </div>
       ) : (
-        <div className="rounded-2xl glass-panel border border-white/10 overflow-hidden divide-y divide-white/5">
+        <div className="unslop-card border border-[rgba(237,237,237,0.08)] bg-[#161618] overflow-hidden divide-y divide-[rgba(237,237,237,0.06)]">
           {filtered.map((email) => {
             const isExpanded = expandedId === email._id;
 
             return (
-              <div key={email._id} className="transition-colors hover:bg-white/[0.02]">
-                {/* Collapsible Row Header */}
+              <div key={email._id} className="transition-colors hover:bg-[#19191b]">
                 <div
                   onClick={() => toggleExpand(email._id)}
-                  className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
+                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="font-bold text-white text-sm truncate">
+                    <div className="flex items-center gap-2.5 mb-1">
+                      <span className="text-sm text-[#ededed] font-normal truncate">
                         {email.subject}
                       </span>
                       <StatusBadge status={email.status} />
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400">
-                      <span className="font-mono text-neutral-300">
+                    <div className="flex items-center gap-3 text-xs text-[#85858b]">
+                      <span className="tabular-nums">
                         {email.recipients?.length || 0} recipient{(email.recipients?.length || 0) !== 1 ? 's' : ''}
                       </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <HiOutlineClock size={13} />
+                      <span>&bull;</span>
+                      <span className="tabular-nums">
                         {formatDate(email.sentAt || email.createdAt)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={(e) => handleDelete(email._id, e)}
-                      className="p-2 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                      title="Delete Record"
+                      className="p-1.5 rounded text-[#85858b] hover:text-[#e5484d] hover:bg-[#271415] transition-colors cursor-pointer"
+                      title="Delete record"
                     >
-                      <HiOutlineTrash size={16} />
+                      <HiOutlineTrash size={15} />
                     </button>
 
-                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400">
-                      {isExpanded ? <HiOutlineChevronUp size={16} /> : <HiOutlineChevronDown size={16} />}
+                    <div className="text-[#85858b]">
+                      {isExpanded ? <HiOutlineChevronUp size={15} /> : <HiOutlineChevronDown size={15} />}
                     </div>
                   </div>
                 </div>
 
-                {/* Expanded Details Section */}
                 {isExpanded && (
-                  <div className="px-5 pb-6 pt-2 bg-black/40 border-t border-white/5 space-y-4">
-                    {/* Error diagnostic banner if failed */}
+                  <div className="px-5 pb-5 pt-1 bg-[#131315] border-t border-[rgba(237,237,237,0.06)] space-y-4">
                     {email.status === 'failed' && email.errorMessage && (
-                      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs leading-relaxed">
-                        <strong className="block font-bold text-rose-200 mb-1">Brevo Error Log:</strong>
-                        {email.errorMessage}
+                      <div className="p-3 rounded-md bg-[#271415] border border-[#e5484d]/20 text-[#e5484d] text-xs">
+                        <strong>Relay error:</strong> {email.errorMessage}
                       </div>
                     )}
 
-                    {/* Recipients Chips */}
                     <div>
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">
-                        Delivered Recipients ({email.recipients?.length || 0})
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto pr-2">
+                      <p className="text-xs text-[#85858b] mb-1.5">Recipients ({email.recipients?.length || 0})</p>
+                      <div className="flex flex-wrap gap-1 max-h-28 overflow-y-auto pr-1">
                         {email.recipients?.map((r, i) => (
                           <span
                             key={i}
-                            className="inline-block px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] font-mono text-neutral-300"
+                            className="inline-block px-2 py-0.5 rounded bg-[#1c1c1f] border border-[rgba(237,237,237,0.08)] text-[11px] font-mono text-[#a1a1a6]"
                           >
                             {r}
                           </span>
@@ -284,24 +255,21 @@ export default function History() {
                       </div>
                     </div>
 
-                    {/* HTML Preview Box */}
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
-                          Message Body Preview
-                        </p>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-xs text-[#85858b]">Message preview</p>
                         <button
                           type="button"
                           onClick={(e) => handleCopyBody(email.body, email._id, e)}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1 text-xs text-[#a1a1a6] hover:text-[#ededed] transition-colors cursor-pointer"
                         >
-                          {copiedId === email._id ? <HiOutlineCheck size={13} /> : null}
+                          {copiedId === email._id ? <HiOutlineCheck size={12} /> : null}
                           <span>{copiedId === email._id ? 'Copied' : 'Copy HTML'}</span>
                         </button>
                       </div>
 
-                      <div className="rounded-xl border border-neutral-300 bg-white p-4 max-h-56 overflow-auto text-black">
-                        <div dangerouslySetInnerHTML={{ __html: email.body || '<em>No body content</em>' }} />
+                      <div className="rounded-md border border-[rgba(237,237,237,0.08)] bg-white p-4 max-h-52 overflow-auto text-[#111827] text-xs">
+                        <div dangerouslySetInnerHTML={{ __html: email.body || '<em>No content</em>' }} />
                       </div>
                     </div>
                   </div>

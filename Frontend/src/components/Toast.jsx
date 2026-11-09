@@ -1,5 +1,6 @@
 /**
- * Toast — floating glassmorphic notification banner with auto-dismiss.
+ * Toast (Unslop pass)
+ * Quiet, readable notification toast with subtle hairline border and semantic indicator.
  */
 import { useEffect, useState } from 'react';
 import { HiOutlineCheckCircle, HiOutlineExclamationCircle, HiOutlineXMark } from 'react-icons/hi2';
@@ -11,8 +12,8 @@ export default function Toast({ message, type = 'success', onClose }) {
     const frame = requestAnimationFrame(() => setVisible(true));
     const timer = setTimeout(() => {
       setVisible(false);
-      setTimeout(() => onClose?.(), 250);
-    }, 4500);
+      setTimeout(() => onClose?.(), 200);
+    }, 4000);
 
     return () => {
       cancelAnimationFrame(frame);
@@ -29,35 +30,30 @@ export default function Toast({ message, type = 'success', onClose }) {
 
   return (
     <div
-      className={`fixed top-20 right-5 z-[100] flex items-start gap-3.5 px-4 py-3.5 rounded-xl border backdrop-blur-xl shadow-2xl transition-all duration-300 min-w-[320px] max-w-md ${
-        isSuccess
-          ? 'bg-emerald-950/80 border-emerald-500/40 text-emerald-200 shadow-emerald-950/50'
-          : 'bg-rose-950/80 border-rose-500/40 text-rose-200 shadow-rose-950/50'
-      } ${
-        visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-3 scale-95'
+      role="alert"
+      className={`fixed top-5 right-5 z-[100] flex items-start gap-3 px-4 py-3 rounded-lg border bg-[#161618] border-[rgba(237,237,237,0.12)] shadow-xl transition-all duration-200 min-w-[300px] max-w-md ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
       }`}
     >
       <div className="pt-0.5 shrink-0">
         {isSuccess ? (
-          <HiOutlineCheckCircle className="text-emerald-400 text-xl" />
+          <HiOutlineCheckCircle className="text-[#4cc38a]" size={16} />
         ) : (
-          <HiOutlineExclamationCircle className="text-rose-400 text-xl" />
+          <HiOutlineExclamationCircle className="text-[#e5484d]" size={16} />
         )}
       </div>
 
-      <div className="flex-1 text-xs font-medium leading-relaxed">
-        <p className="font-semibold text-white mb-0.5">
-          {isSuccess ? 'Success' : 'Notice'}
-        </p>
-        <p className="opacity-90">{message}</p>
+      <div className="flex-1 text-[13px] text-[#ededed] leading-snug">
+        {message}
       </div>
 
       <button
+        type="button"
         onClick={handleClose}
-        className="text-neutral-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10 cursor-pointer"
-        aria-label="Dismiss Notification"
+        className="text-[#85858b] hover:text-[#ededed] transition-colors p-0.5 rounded cursor-pointer"
+        aria-label="Dismiss notification"
       >
-        <HiOutlineXMark size={16} />
+        <HiOutlineXMark size={14} />
       </button>
     </div>
   );

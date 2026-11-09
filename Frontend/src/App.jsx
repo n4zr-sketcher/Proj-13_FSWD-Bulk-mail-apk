@@ -1,5 +1,6 @@
 /**
- * App — root component with routes, layout container, and Aura: Violet Horizon background.
+ * App (Unslop pass)
+ * Root routing layout with quiet header, structured spacing, and Aura background.
  */
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -12,26 +13,23 @@ import Dashboard from './pages/Dashboard';
 import ComposeMail from './pages/ComposeMail';
 import History from './pages/History';
 
-/**
- * Layout — wraps authenticated views with the floating Navbar and Violet Horizon Aura.
- */
 function Layout() {
   return (
-    <div className="min-h-screen text-slate-100 relative overflow-hidden flex flex-col">
-      {/* Aura Gradient: "Violet Horizon" Atmospheric Background */}
+    <div className="min-h-screen text-[#ededed] relative overflow-hidden flex flex-col">
+      {/* Subtle Aura atmosphere */}
       <AuraBackground fixed={true} />
 
-      {/* Floating Navbar */}
+      {/* Quiet top navigation */}
       <Navbar />
 
-      {/* Content wrapper with top spacing for floating navbar - sits above layers */}
-      <main className="relative z-[1] flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-16">
+      {/* Main content column on 4px spacing grid */}
+      <main className="relative z-[1] flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <Outlet />
       </main>
 
-      {/* Clean footer */}
-      <footer className="relative z-[1] w-full border-t border-white/5 py-6 text-center text-xs text-neutral-500">
-        <p>BulkMail Platform • Powered by Brevo Transactional Engine</p>
+      {/* Minimalist footer */}
+      <footer className="relative z-[1] w-full border-t border-[rgba(237,237,237,0.08)] py-5 text-center text-xs text-[#85858b]">
+        <p>BulkMail &bull; Brevo Transactional Engine</p>
       </footer>
     </div>
   );
@@ -42,11 +40,11 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public authentication routes */}
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected routes wrapped in main layout */}
+          {/* Protected routes */}
           <Route
             path="/"
             element={
@@ -61,7 +59,7 @@ export default function App() {
             <Route path="history" element={<History />} />
           </Route>
 
-          {/* Catch-all route */}
+          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
